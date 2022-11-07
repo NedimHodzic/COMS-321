@@ -1,0 +1,250 @@
+//I went solo
+//Name: Nedim Hodzic
+//NetID: nhodzic
+
+main:
+ADD X19, XZR, XZR //Storing a to a saved register
+ADDI X20, XZR, #100 //Storing n to a saved register
+
+ADD X0, X19, XZR //Setting first param for fill to a
+ADD X1, X20, XZR //Setting second param for fill to n
+BL fill
+
+ADD X0, X19, XZR //Setting first param for bubble_sort to a
+ADD X1, X20, XZR //Setting second param for bubble_sort to n
+BL bubble_sort
+
+//Search for first value (0)
+ADD X0, X19, XZR
+ADD X1, XZR, XZR
+SUBI X2, X20, #1
+ADD X3, XZR, XZR
+BL binary_search
+PRNT X0
+
+//Search for last value (99)
+ADD X0, X19, XZR
+ADD X1, XZR, XZR
+SUBI X2, X20, #1
+SUBI X3, X20, #1
+BL binary_search
+PRNT X0
+
+//Search for middle value (50)
+ADD X0, X19, XZR
+ADD X1, XZR, XZR
+SUBI X2, X20, #1
+LSR X3, X20, #1
+BL binary_search
+PRNT X0
+
+//Search for a value thats outside (-1)
+ADD X0, X19, XZR
+ADD X1, XZR, XZR
+SUBI X2, X20, #1
+ADDI X3, X20, #1
+BL binary_search
+PRNT X0
+
+BL end
+
+//========================================
+fill:
+SUBI SP, SP, #24
+STUR X21, [SP, #16]
+STUR X20, [SP, #8]
+STUR X19, [SP, #0]
+
+ADD X19, XZR, XZR //X19 = i = 0
+ADD X20, X0, XZR //X20 = a
+ADD X21, X1, XZR //X21 = n
+
+fill_loop:
+SUBS XZR, X19, X21 //i - n
+B.GE end_fill //If (i - n) >= 0 end fill
+
+LSL X9, X19, #3 //Making i 8 bytes
+ADD X9, X20, X9 //a[i]
+
+SUB X10, X21, X19 //n - i
+SUBI X11, X10, #1 //(n - 1) - 1
+
+STUR X11, [X9, #0] //a[i] = (n - 1) - 1
+
+ADDI X19, X19, #1 //i++
+
+B fill_loop
+
+end_fill:
+LDUR X19, [SP, #0]
+LDUR X20, [SP, #8]
+LDUR X21, [SP, #16]
+ADDI SP, SP, #24
+
+BR LR
+//========================================
+
+//============================================================
+bubble_sort:
+SUBI SP, SP, #24
+STUR LR, [SP, #16]
+STUR X20, [SP, #8]
+STUR X19, [SP, #0]
+
+ADD X19, X0, XZR //X19 = a
+ADD X20, X1, XZR //X20 = n
+
+bubble_sort_loop:
+ADD X0, X19, XZR //Setting first param for bs_swap to a
+ADD X1, X20, XZR //Setting second param for bs_swap to n
+BL bs_swap
+
+SUBS XZR, X0, XZR //Return from bs_swap - 0
+B.NE bubble_sort_loop //If return from bs_swap != 0, run again
+
+bubble_sort_end:
+LDUR X19, [SP, #0]
+LDUR X20, [SP, #8]
+LDUR LR, [SP, #16]
+ADDI SP, SP, #24
+
+BR LR
+//============================================================
+
+//===================================================
+bs_swap:
+SUBI SP, SP, #40
+STUR LR, [SP, #32]
+STUR X22, [SP, #24]
+STUR X21, [SP, #16]
+STUR X20, [SP, #8]
+STUR X19, [SP, #0]
+
+ADD X19, X0, XZR //a[]
+ADD X20, X1, XZR //n
+ADD X21, XZR, XZR //X21 = num_swaps = 0
+ADDI X22, XZR, #1 //X22 = i = 1
+
+bs_swap_loop:
+SUBS XZR, X22, X20 //i - n
+B.GE end_bs_swap //If i - n >= 0 end swap loop
+
+SUBI X9, X22, #1 //i - 1
+
+LSL X9, X9, #3 //Making i - 1 8 bytes
+LSL X10, X22, #3 //Making i 8 bytes
+ADD X9, X19, X9 //a[i - 1]
+ADD X10, X19, X10 //a[i]
+
+LDUR X11, [X9, #0] //X11 = value of a[i - 1]
+LDUR X12, [X10, #0] //X12 = value of a[i]
+
+SUBS XZR, X11, X12 //a[i - 1] - a[i]
+B.LE no_swap //If a[i - 1] - a[i] <= 0 swap values
+
+ADD X0, X9, XZR
+ADD X1, X10, XZR
+BL swap
+
+ADDI X21, X21, #1 //num_swaps++
+ADDI X22, X22, #1 //i++
+
+B bs_swap_loop
+
+no_swap:
+ADDI X22, X22, #1 //i++
+
+B bs_swap_loop
+
+end_bs_swap:
+ADD X0, X21, XZR //Setting return value to num_swaps
+
+LDUR X19, [SP, #0]
+LDUR X20, [SP, #8]
+LDUR X21, [SP, #16]
+LDUR X22, [SP, #24]
+LDUR LR, [SP, #32]
+ADDI SP, SP, #40
+
+BR LR
+//===================================================
+
+//==============================================
+swap:
+LDUR X9, [X0, #0] //Saving value of p into X0
+LDUR X10, [X1, #0] //Saving value of q into X1
+STUR X10, [X0, #0] //Loading value of q into X0
+STUR X9, [X1, #0] //Loading value of p into X1
+
+BR LR
+//==============================================
+
+//=======================================================================
+binary_search:
+SUBI SP, SP, #40
+STUR X23, [SP, #32]
+STUR X22, [SP, #24]
+STUR X21, [SP, #16]
+STUR X20, [SP, #8]
+STUR X19, [SP, #0]
+
+recur:
+ADD X19, X0, XZR //X19 = a
+ADD X20, X1, XZR //X20 = start
+ADD X21, X2, XZR //X21 = end
+ADD X22, X3, XZR //X22 = value
+
+SUBS XZR, X21, X20 //end - start
+B.LT return_negative_one //If end - start < 0 return -1
+
+ADD X23, X20, X21 //X23 = index = start + end
+LSR X23, X23, #1 //index = (start + end) / 2
+LSL X9, X23, #3 //Making index 8 bytes
+ADD X9, X19, X9 //a[index]
+
+LDUR X10, [X9, #0] //X11 = value of a[index]
+
+SUBS XZR, X10, X22 //a[index] - value
+B.EQ return_index //If a[index] - value = 0 return index
+
+ADD X0, X19, XZR
+ADD X1, X20, XZR
+SUBI X2, X23, #1 //Set end to index - 1
+ADD X3, X22, XZR
+
+SUBS XZR, X10, X22 //a[index] - value
+B.GT recur //If a[index] - value > 0 change end to index - 1
+
+ADD X0, X19, XZR
+ADDI X1, X23, #1 //Set start to index + 1
+ADD X2, X21, XZR
+ADD X3, X22, XZR
+B recur
+
+return_negative_one:
+SUBI X0, XZR, #1 //Setting return value to -1
+
+LDUR X19, [SP, #0]
+LDUR X20, [SP, #8]
+LDUR X21, [SP, #16]
+LDUR X22, [SP, #24]
+LDUR X23, [SP, #32]
+ADDI SP, SP, #40
+
+BR LR
+
+return_index:
+ADD X0, X23, XZR //Setting return value to index
+
+LDUR X19, [SP, #0]
+LDUR X20, [SP, #8]
+LDUR X21, [SP, #16]
+LDUR X22, [SP, #24]
+LDUR X23, [SP, #32]
+ADDI SP, SP, #40
+
+BR LR
+//=======================================================================
+
+end:
+DUMP
