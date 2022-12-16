@@ -12,7 +12,7 @@ AND
 ANDI   
 B  
 B.cond: This is a CB instruction in which the Rt field is not a register, but a code that indicates the condition extension. These have the values (base 16):  
-  0: EQ  
+|0: EQ  
   1: NE  
   2: HS  
   3: LO  
