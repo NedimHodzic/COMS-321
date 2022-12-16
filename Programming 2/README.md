@@ -6,10 +6,10 @@ Except that it ignores the PC and flow control, a disassembler essentially imple
 
 Your disassembler should fully support the following set of LEGv8 instructions:
 
-ADD. 
-ADDI. 
-AND. 
-ANDI. 
+ADD  
+ADDI   
+AND   
+ANDI   
 B
 B.cond: This is a CB instruction in which the Rt field is not a register, but a code that indicates the condition extension. These have the values (base 16):
 0: EQ
