@@ -1,3 +1,5 @@
+# Programming 2
+
 For this assignment, you will be implementing a disassembler for the binaries that run on our LEGv8 emulator in binary mode.  Your disassembler will handle input files containing any number of contiguous, binary LEGv8 instructions encoded in big-endian byte order.  The input file name will be given as the first command line parameter.  Your output, printed to the terminal, should be--modulo some caveats discussed below--the original LEGv8 assembly code that generated the binary.
 
 Except that it ignores the PC and flow control, a disassembler essentially implements the first two stages (fetch and decode) of the five-stage pipeline described in lecture and the textbook.  A working disassembler requires perhaps half of the total work of building a binary emulator.
