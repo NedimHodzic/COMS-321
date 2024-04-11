@@ -1,4 +1,4 @@
 # COMS-321
-This is a repository containing homework assignments from COM S 321 at Iowa State University
+This repository contains homework assignments from COM S 321: Introduction to Computer Architecture and Machine-Level Programming at Iowa State University, taken in my Junior year.
 
-README's for each assignment are included
+README's for each assignment are included.
